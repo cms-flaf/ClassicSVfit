@@ -8,6 +8,10 @@
 
 #include <math.h>
 
+#ifdef __APPLE__
+constexpr auto sincos = __sincos;
+#endif
+
 using namespace classic_svFit;
 
 /// global function pointer, needed for Markov Chain integration
