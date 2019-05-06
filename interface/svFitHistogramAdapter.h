@@ -166,7 +166,7 @@ namespace classic_svFit
 
     unsigned int registerQuantity(SVfitQuantity* quantity);
     const SVfitQuantity* getQuantity(unsigned int iQuantity) const;
-    inline unsigned int getNQuantities() const { return quantities_.size(); }
+    inline unsigned int getNQuantities() const { return static_cast<unsigned int>(quantities_.size()); }
 
     void bookHistograms(const LorentzVector& vis1P4, const LorentzVector& vis2P4, const Vector& met);
     void writeHistograms(const std::string& likelihoodFileName) const;
