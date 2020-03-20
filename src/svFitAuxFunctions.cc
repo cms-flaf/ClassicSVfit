@@ -9,13 +9,11 @@ namespace classic_svFit
 
 double roundToNdigits(double x, int n)
 {
-  double tmp = TMath::Power(10., n);
-  if ( x != 0. ) {
-    tmp /= TMath::Power(10., TMath::Floor(TMath::Log10(TMath::Abs(x))));
-  }
-  double x_rounded = TMath::Nint(x*tmp)/tmp;
-  //std::cout << "<roundToNdigits>: x = " << x << ", x_rounded = " << x_rounded << std::endl;
-  return x_rounded;
+    if(x == 0.)
+        return 0.;
+    const int p = std::min<int>(n, n - std::ceil(std::log10(std::abs(x))));
+    const double scale = std::pow(10., p);
+    return std::floor(x * scale + 0.5) / scale;
 }
 
 TGraphErrors* makeGraph(const std::string& graphName, const std::vector<GraphPoint>& graphPoints)
@@ -173,7 +171,7 @@ double compPSfactor_tauToLepDecay(double x, double visEn, double visP, double vi
     if ( !(tauEn_rf >= tauLeptonMass && visEn_rf >= visMass) ) return 0.;
     double I = nunuMass2*(2.*tauEn_rf*visEn_rf - (2./3.)*TMath::Sqrt((square(tauEn_rf) - tauLeptonMass2)*(square(visEn_rf) - visMass2)));
     #ifdef XSECTION_NORMALIZATION
-    I *= GFfactor;    
+    I *= GFfactor;
     #endif
     double cosThetaNuNu = compCosThetaNuNu(visEn, visP, visMass2, nunuEn, nunuP, nunuMass2);
     if ( !(cosThetaNuNu >= (-1. + epsilon) && cosThetaNuNu <= +1.) ) return 0.;
