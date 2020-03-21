@@ -13,7 +13,7 @@ namespace classic_svFit
    public:
     static TH1* compHistogramDensity(TH1 const* histogram);
     static void extractHistogramProperties(
-        TH1 const* histogram,
+        TH1* histogram,
         double& xMaximum,
         double& xMaximum_interpol,
         double& xMean,
@@ -21,8 +21,8 @@ namespace classic_svFit
         double& xQuantile050,
         double& xQuantile084
     );
-    static double extractValue(TH1 const* histogram);
-    static double extractUncertainty(TH1 const* histogram);
+    static double extractValue(TH1* histogram);
+    static double extractUncertainty(TH1* histogram);
     static double extractLmax(TH1 const* histogram);
     static TH1* makeHistogram(const std::string& histogramName, double xMin, double xMax, double logBinWidth);
   };
@@ -55,10 +55,10 @@ namespace classic_svFit
     bool isValidSolution() const;
 
    private:
-    static int nInstances;
+    static std::atomic<int> nInstances;
     std::string uniqueName;
 
-    mutable TH1* histogram_ = nullptr;
+    TH1* histogram_ = nullptr;
   };
 
   class DiTauSystemPtSVfitQuantity : public SVfitQuantity
@@ -187,7 +187,7 @@ namespace classic_svFit
                         const LorentzVector& vis1P4, const LorentzVector& vis2P4, const Vector& met) const;
 
    protected:
-    mutable std::vector<SVfitQuantity*> quantities_;
+    std::vector<SVfitQuantity*> quantities_;
 
     LorentzVector vis1P4_;
     LorentzVector vis2P4_;

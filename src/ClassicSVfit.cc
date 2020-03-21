@@ -15,10 +15,6 @@ using namespace classic_svFit;
 
 namespace
 {
-double g_C(const double* x, size_t dim, void* param)
-{
-        return ClassicSVfitIntegrand::gSVfitIntegrand->Eval(x);
-}
 }
 
 ClassicSVfit::ClassicSVfit(int verbosity)
@@ -281,7 +277,6 @@ void ClassicSVfit::prepareIntegrand(bool useHistoAdapter){
         integrand_->setLegIntegrationParams(1,legIntegrationParams_[1]);
         integrand_->setNumDimensions(numDimensions_);
         integrand_->setIntegrationRanges(xl_, xu_);
-        ClassicSVfitIntegrand::gSVfitIntegrand = integrand_;
 }
 
 void ClassicSVfit::clearMET(){ integrand_->clearMET();}
@@ -329,7 +324,8 @@ ClassicSVfit::integrate(const std::vector<MeasuredTauLepton>& measuredTauLeptons
                 histogramAdapter_->bookHistograms(measuredTauLeptons_[0].p4(), measuredTauLeptons_[1].p4(), met_);
         }
 
-        intAlgo_->integrate(&g_C, xl_, xu_, numDimensions_, theIntegral, theIntegralErr);
+        const auto g_C = [&](const double* x, size_t dim, void* param) { return integrand_->Eval(x); };
+        intAlgo_->integrate(g_C, xl_, xu_, numDimensions_, theIntegral, theIntegralErr);
         isValidSolution_ = histogramAdapter_->isValidSolution();
 
         if ( likelihoodFileName_ != "" ) {

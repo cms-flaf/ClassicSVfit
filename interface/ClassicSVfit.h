@@ -129,7 +129,7 @@ unsigned int numDimensions_ = 0;
 double xl_[6], xu_[6];
 
 /// histograms for evaluation of pT, eta, phi, mass and transverse mass of di-tau system
-mutable classic_svFit::HistogramAdapter* histogramAdapter_;
+classic_svFit::HistogramAdapter* histogramAdapter_;
 std::string likelihoodFileName_;
 
 /// flag indicating if algorithm succeeded to find valid solution

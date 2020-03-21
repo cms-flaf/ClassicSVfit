@@ -19,7 +19,7 @@ TH1* HistogramTools::compHistogramDensity(TH1 const* histogram)
 }
 
 void HistogramTools::extractHistogramProperties(
-    TH1 const* histogram,
+    TH1* histogram,
     double& xMaximum,
     double& xMaximum_interpol,
     double& xMean,
@@ -36,7 +36,7 @@ void HistogramTools::extractHistogramProperties(
     probSum[0] = 0.16;
     probSum[1] = 0.50;
     probSum[2] = 0.84;
-    (const_cast<TH1*>(histogram))->GetQuantiles(3, q, probSum);
+    histogram->GetQuantiles(3, q, probSum);
     xQuantile016 = q[0];
     xQuantile050 = q[1];
     xQuantile084 = q[2];
@@ -78,7 +78,7 @@ void HistogramTools::extractHistogramProperties(
   delete histogram_density;
 }
 
-double HistogramTools::extractValue(TH1 const* histogram)
+double HistogramTools::extractValue(TH1* histogram)
 {
   double maximum, maximum_interpol, mean, quantile016, quantile050, quantile084;
   HistogramTools::extractHistogramProperties(histogram, maximum, maximum_interpol, mean, quantile016, quantile050, quantile084);
@@ -86,7 +86,7 @@ double HistogramTools::extractValue(TH1 const* histogram)
   return value;
 }
 
-double HistogramTools::extractUncertainty(TH1 const* histogram)
+double HistogramTools::extractUncertainty(TH1* histogram)
 {
   double maximum, maximum_interpol, mean, quantile016, quantile050, quantile084;
   HistogramTools::extractHistogramProperties(histogram, maximum, maximum_interpol, mean, quantile016, quantile050, quantile084);
@@ -117,7 +117,7 @@ TH1* HistogramTools::makeHistogram(const std::string& histogramName, double xMin
   return histogram;
 }
 
-int SVfitQuantity::nInstances = 0;
+std::atomic<int> SVfitQuantity::nInstances = 0;
 
 SVfitQuantity::SVfitQuantity() :
   uniqueName("_SVfitQuantity_"+std::to_string(++SVfitQuantity::nInstances))
@@ -370,9 +370,9 @@ void HistogramAdapter::bookHistograms(const LorentzVector& vis1P4, const Lorentz
 void HistogramAdapter::fillHistograms(const LorentzVector& tau1P4, const LorentzVector& tau2P4, const LorentzVector& tauSumP4,
                                       const LorentzVector& vis1P4, const LorentzVector& vis2P4, const Vector& met) const
 {
-  for (std::vector<SVfitQuantity*>::iterator quantity = quantities_.begin(); quantity != quantities_.end(); ++quantity)
+  for (SVfitQuantity* quantity : quantities_)
   {
-    (*quantity)->fillHistogram(tau1P4, tau2P4, tauSumP4, vis1P4, vis2P4, met);
+    quantity->fillHistogram(tau1P4, tau2P4, tauSumP4, vis1P4, vis2P4, met);
   }
 }
 
@@ -381,9 +381,9 @@ void HistogramAdapter::writeHistograms(const std::string& likelihoodFileName) co
   TFile* likelihoodFile = new TFile(likelihoodFileName.data(), "RECREATE");
   likelihoodFile->cd();
 
-  for (std::vector<SVfitQuantity*>::iterator quantity = quantities_.begin(); quantity != quantities_.end(); ++quantity)
+  for (SVfitQuantity* quantity : quantities_)
   {
-    (*quantity)->writeHistogram();
+    quantity->writeHistogram();
   }
 
   likelihoodFile->Write();

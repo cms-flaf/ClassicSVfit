@@ -15,8 +15,6 @@ constexpr auto sincos = __sincos;
 using namespace classic_svFit;
 
 /// global function pointer, needed for Markov Chain integration
-const ClassicSVfitIntegrand* ClassicSVfitIntegrand::gSVfitIntegrand = 0;
-
 ClassicSVfitIntegrand::ClassicSVfitIntegrand(int verbosity)
   : beamAxis_(0., 0., 1.),
 #ifdef USE_SVFITTF
@@ -38,8 +36,6 @@ ClassicSVfitIntegrand::ClassicSVfitIntegrand(int verbosity)
     std::cout << "<ClassicSVfitIntegrand::ClassicSVfitIntegrand>:" << std::endl;
   }
 
-  // set global function pointer to this
-  gSVfitIntegrand = this;
 }
 
 ClassicSVfitIntegrand::~ClassicSVfitIntegrand()
@@ -269,7 +265,7 @@ void ClassicSVfitIntegrand::computeVisMom(LorentzVector & vis1P4,  LorentzVector
   vis2P4.SetPxPyPzE(vis2Px, vis2Py, vis2Pz, vis2En);
 }
 
-void ClassicSVfitIntegrand::rescaleX(const double* q) const
+void ClassicSVfitIntegrand::rescaleX(const double* q)
 {
   for ( unsigned iDimension = 0; iDimension < numDimensions_; ++iDimension ) {
     const double & q_i = q[iDimension];
@@ -337,7 +333,7 @@ double ClassicSVfitIntegrand::EvalMET_TF(const double & aMETx, const double & aM
 }
 
 double
-ClassicSVfitIntegrand::EvalPS(const double* q) const
+ClassicSVfitIntegrand::EvalPS(const double* q)
 {
   rescaleX(q);
 
@@ -558,7 +554,7 @@ ClassicSVfitIntegrand::EvalPS(const double* q) const
   return prob;
 }
 
-double ClassicSVfitIntegrand::Eval(const double* x, unsigned int iComponent) const
+double ClassicSVfitIntegrand::Eval(const double* x, unsigned int iComponent)
 {
 
     if(iComponent==0) phaseSpaceComponentCache_ = EvalPS(x);

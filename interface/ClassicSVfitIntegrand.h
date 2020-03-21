@@ -73,7 +73,7 @@ namespace classic_svFit
     void clearMET();
 
     /// evaluate Phase Space part of the integrand for given value of integration variables x
-    double EvalPS(const double* x) const;
+    double EvalPS(const double* x);
 
     /// evaluate the MET TF part of the integral.
     double EvalMET_TF(const double & aMETx, const double & aMETy, const TMatrixD&) const;
@@ -84,22 +84,19 @@ namespace classic_svFit
 
     /// evaluate the iComponent of the full integrand for given value of integration variables q.
     /// q is given in standarised range [0,1] for each dimension.
-    double Eval(const double* q, unsigned int iComponent=0) const;
+    double Eval(const double* q, unsigned int iComponent=0);
 
     ///Transform the values fo integration variables from [0,1] to
     ///desires [xMin,xMax] range;
-    void rescaleX(const double* q) const;
+    void rescaleX(const double* q);
 
     int getMETComponentsSize() const;
 
-    /// static pointer to this (needed for interfacing the likelihood function calls to Markov Chain integration)
-    static const ClassicSVfitIntegrand* gSVfitIntegrand;
-
    protected:
 
-    mutable LorentzVector vis1P4_, vis2P4_;
-    mutable LorentzVector nu1P4_, nu2P4_;
-    mutable LorentzVector tau1P4_, tau2P4_;
+    LorentzVector vis1P4_, vis2P4_;
+    LorentzVector nu1P4_, nu2P4_;
+    LorentzVector tau1P4_, tau2P4_;
 
     /// measured tau leptons
     MeasuredTauLepton measuredTauLepton1_;
@@ -129,8 +126,8 @@ namespace classic_svFit
     double leg2eZ_y_;
     double leg2eZ_z_;
 
-    mutable double mVis_measured_;
-    mutable double mVis2_measured_;
+    double mVis_measured_;
+    double mVis2_measured_;
 
     Vector beamAxis_;
 
@@ -159,9 +156,9 @@ namespace classic_svFit
 
     classic_svFit::integrationParameters legIntegrationParams_[classic_svFit::numberOfLegs];
     unsigned numDimensions_;
-    mutable double xMin_[classic_svFit::maxNumberOfDimensions];
-    mutable double xMax_[classic_svFit::maxNumberOfDimensions];
-    mutable double x_[classic_svFit::maxNumberOfDimensions];
+    double xMin_[classic_svFit::maxNumberOfDimensions];
+    double xMax_[classic_svFit::maxNumberOfDimensions];
+    double x_[classic_svFit::maxNumberOfDimensions];
 
     /// flag to enable/disable addition of log(mTauTau) term to the nll to suppress high mass tail in mTauTau distribution
     bool addLogM_fixed_;
@@ -176,7 +173,7 @@ namespace classic_svFit
 
     HistogramAdapter* histogramAdapter_;
 
-    mutable double phaseSpaceComponentCache_;
+    double phaseSpaceComponentCache_;
 
     /// verbosity level
     int verbosity_;
