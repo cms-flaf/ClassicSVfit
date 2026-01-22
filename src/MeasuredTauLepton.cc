@@ -78,8 +78,17 @@ MeasuredTauLepton::MeasuredTauLepton(const MeasuredTauLepton& measuredTauLepton)
   initialize();
 }
 
-MeasuredTauLepton::~MeasuredTauLepton()
+MeasuredTauLepton& MeasuredTauLepton::operator=(const MeasuredTauLepton& measuredTauLepton)
 {
+  type_ = measuredTauLepton.type();
+  pt_ = measuredTauLepton.pt();
+  eta_ = measuredTauLepton.eta();
+  phi_ = measuredTauLepton.phi();
+  mass_ = measuredTauLepton.mass();
+  decayMode_ = measuredTauLepton.decayMode();
+  preciseVisMass_ = measuredTauLepton.mass();
+  initialize();
+  return *this;
 }
 
 int MeasuredTauLepton::type() const { return type_; }
